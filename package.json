@@ -14,7 +14,9 @@
     "job:falabellacom:clients": "ts-node src/falabellacom/Clients/run.ts",
     "job:falabellacom:invoices": "ts-node src/falabellacom/Invoices/run.ts",
     "job:woocommerce_us:clients": "ts-node src/Woocommerce_us/Clients/run.ts",
-    "job:woocommerce_us:invoices": "ts-node src/Woocommerce_us/Invoices/run.ts"
+    "job:woocommerce_us:invoices": "ts-node src/Woocommerce_us/Invoices/run.ts",
+    "job:meli:clients": "ts-node src/Meli/Clients/run.ts",
+    "job:meli:invoices": "ts-node src/Meli/Invoices/run.ts"
   },
   "engines": {
     "node": ">=20"

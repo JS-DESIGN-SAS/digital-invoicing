@@ -12,6 +12,8 @@ import { runFalabellaClientsJob } from './falabellacom/Clients';
 import { runFalabellaInvoicesJob } from './falabellacom/Invoices';
 import { runWoocommerceUsClientsJob } from './Woocommerce_us/Clients';
 import { runWoocommerceUsInvoicesJob } from './Woocommerce_us/Invoices';
+import { runMeliClientsJob } from './Meli/Clients';
+import { runMeliInvoicesJob } from './Meli/Invoices';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '8080', 10);
@@ -101,6 +103,26 @@ app.post('/jobs/woocommerce_us/invoices', async (_req, res) => {
     res.json(result);
   } catch (err) {
     console.error('Job woocommerce_us/invoices failed:', err);
+    res.status(500).json({ error: String(err), messages: [] });
+  }
+});
+
+app.post('/jobs/meli/clients', async (_req, res) => {
+  try {
+    const result = await runMeliClientsJob();
+    res.json(result);
+  } catch (err) {
+    console.error('Job meli/clients failed:', err);
+    res.status(500).json({ error: String(err), messages: [] });
+  }
+});
+
+app.post('/jobs/meli/invoices', async (_req, res) => {
+  try {
+    const result = await runMeliInvoicesJob();
+    res.json(result);
+  } catch (err) {
+    console.error('Job meli/invoices failed:', err);
     res.status(500).json({ error: String(err), messages: [] });
   }
 });
