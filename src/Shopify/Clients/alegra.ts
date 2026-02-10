@@ -51,6 +51,8 @@ export async function createClient(row: ClientRow): Promise<{ ok: boolean; statu
   const authHeader = 'Basic ' + Buffer.from(`${email}:${token}`).toString('base64');
   const payload = buildPayload(row);
 
+  console.log('[Alegra Client] Datos a cargar:', JSON.stringify(payload, null, 2));
+
   const res = await fetch(ALEGRA_CONTACTS_URL, {
     method: 'POST',
     headers: {
@@ -63,5 +65,6 @@ export async function createClient(row: ClientRow): Promise<{ ok: boolean; statu
   });
 
   const body = await res.text();
+  console.log('[Alegra Client] Respuesta Alegra:', { status: res.status, ok: res.ok, body });
   return { ok: res.ok, status: res.status, body };
 }
