@@ -35,7 +35,7 @@ src/
 2. Variables de entorno (o usar Secret Manager en Cloud):
 
    - `GOOGLE_CLOUD_PROJECT` o `GCP_PROJECT`: ID del proyecto GCP
-   - `ALEGRA_USER`: usuario Alegra (ej. email)
+   - `ALEGRA_EMAIL`: email Alegra
    - `ALEGRA_TOKEN`: token de API Alegra
 
    Para desarrollo local puedes usar un `.env` (no subir a Git) o exportar las variables.
@@ -66,7 +66,7 @@ src/
 docker build -t digital-invoicing .
 docker run -p 8080:8080 \
   -e GOOGLE_CLOUD_PROJECT=tu-proyecto \
-  -e ALEGRA_USER=tu-user \
+  -e ALEGRA_EMAIL=tu-email \
   -e ALEGRA_TOKEN=tu-token \
   digital-invoicing
 ```
@@ -78,8 +78,8 @@ docker run -p 8080:8080 \
    - Se dispare en push a la rama que uses (ej. `main`).
    - Usar el archivo `cloudbuild.yaml` de este repo.
 3. En el primer despliegue, configurar en Cloud Run:
-   - **Secret Manager**: crear secretos `alegra-token` y `alegra-user` y asociarlos como variables de entorno o montar como volumen.
-   - O bien inyectar `ALEGRA_TOKEN` y `ALEGRA_USER` como variables de entorno (valor directo o referencia a secreto).
+   - **Secret Manager**: crear secretos `alegra-token` y `alegra-email` y asociarlos como variables de entorno o montar como volumen.
+   - O bien inyectar `ALEGRA_TOKEN` y `ALEGRA_EMAIL` como variables de entorno (valor directo o referencia a secreto).
 
 ### Endpoints (Cloud Run)
 
@@ -96,7 +96,7 @@ Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL 
 - **BigQuery**: el servicio usa **Application Default Credentials**. En Cloud Run es la service account del servicio; en local, `gcloud auth application-default login` o variable `GOOGLE_APPLICATION_CREDENTIALS`.
 - **Alegra**: guardar en **Secret Manager**:
   - `alegra-token`
-  - `alegra-user`  
+  - `alegra-email`  
   Y dar acceso a la service account de Cloud Run a esos secretos. Luego en Cloud Run puedes mapear las variables de entorno desde esos secretos.
 
 ## README por job

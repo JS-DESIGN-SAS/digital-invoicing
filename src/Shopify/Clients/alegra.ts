@@ -47,8 +47,8 @@ function buildPayload(row: ClientRow): AlegraPayload {
 }
 
 export async function createClient(row: ClientRow): Promise<{ ok: boolean; status: number; body: string }> {
-  const { token, user } = await getAlegraSecrets();
-  const authHeader = 'Basic ' + Buffer.from(`${user}:${token}`).toString('base64');
+  const { token, email } = await getAlegraSecrets();
+  const authHeader = 'Basic ' + Buffer.from(`${email}:${token}`).toString('base64');
   const payload = buildPayload(row);
 
   const res = await fetch(ALEGRA_CONTACTS_URL, {

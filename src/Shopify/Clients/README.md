@@ -17,7 +17,7 @@ Job que obtiene órdenes de **BigQuery** (dataset `JS_Designs`: `Orders`, `Invoi
 npm run job:shopify:clients
 ```
 
-Requiere `ALEGRA_USER`, `ALEGRA_TOKEN` y credenciales GCP (BigQuery) configuradas.
+Requiere `ALEGRA_EMAIL`, `ALEGRA_TOKEN` y credenciales GCP (BigQuery) configuradas.
 
 ### HTTP (Cloud Run)
 
@@ -29,7 +29,7 @@ curl -X POST https://<tu-url-cloud-run>/jobs/shopify/clients
 
 | Origen | Variable / Secreto | Descripción |
 |--------|---------------------|-------------|
-| Env o Secret Manager | `ALEGRA_USER` / `alegra-user` | Usuario Alegra (ej. email) |
+| Env o Secret Manager | `ALEGRA_EMAIL` / `alegra-email` | Email Alegra |
 | Env o Secret Manager | `ALEGRA_TOKEN` / `alegra-token` | Token API Alegra |
 | GCP | Service account / ADC | Acceso a BigQuery y Secret Manager |
 

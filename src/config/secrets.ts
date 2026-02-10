@@ -9,7 +9,7 @@ const client = new SecretManagerServiceClient();
 
 export interface AlegraSecrets {
   token: string;
-  user: string;
+  email: string;
 }
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT || '';
@@ -30,22 +30,22 @@ async function getSecret(name: string, version = 'latest'): Promise<string> {
 
 /**
  * Obtiene credenciales de Alegra.
- * Variables de entorno: ALEGRA_TOKEN, ALEGRA_USER (para local o override).
- * Secret Manager: alegra-token, alegra-user (en Cloud).
+ * Variables de entorno: ALEGRA_TOKEN, ALEGRA_EMAIL (para local o override).
+ * Secret Manager: alegra-token, alegra-email (en Cloud).
  */
 export async function getAlegraSecrets(): Promise<AlegraSecrets> {
-  if (process.env.ALEGRA_TOKEN && process.env.ALEGRA_USER) {
-    return { token: process.env.ALEGRA_TOKEN, user: process.env.ALEGRA_USER };
+  if (process.env.ALEGRA_TOKEN && process.env.ALEGRA_EMAIL) {
+    return { token: process.env.ALEGRA_TOKEN, email: process.env.ALEGRA_EMAIL };
   }
   try {
-    const [token, user] = await Promise.all([
+    const [token, email] = await Promise.all([
       getSecret('alegra-token'),
-      getSecret('alegra-user'),
+      getSecret('alegra-email'),
     ]);
-    return { token: token.trim(), user: user.trim() };
+    return { token: token.trim(), email: email.trim() };
   } catch (e) {
     throw new Error(
-      'Configure ALEGRA_TOKEN y ALEGRA_USER (env) o secretos alegra-token y alegra-user en Secret Manager. ' +
+      'Configure ALEGRA_TOKEN y ALEGRA_EMAIL (env) o secretos alegra-token y alegra-email en Secret Manager. ' +
         String(e)
     );
   }
