@@ -10,6 +10,8 @@ import { runRappiClientsJob } from './Rappi/Clients';
 import { runRappiInvoicesJob } from './Rappi/Invoices';
 import { runFalabellaClientsJob } from './falabellacom/Clients';
 import { runFalabellaInvoicesJob } from './falabellacom/Invoices';
+import { runWoocommerceUsClientsJob } from './Woocommerce_us/Clients';
+import { runWoocommerceUsInvoicesJob } from './Woocommerce_us/Invoices';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '8080', 10);
@@ -79,6 +81,26 @@ app.post('/jobs/falabellacom/invoices', async (_req, res) => {
     res.json(result);
   } catch (err) {
     console.error('Job falabellacom/invoices failed:', err);
+    res.status(500).json({ error: String(err), messages: [] });
+  }
+});
+
+app.post('/jobs/woocommerce_us/clients', async (_req, res) => {
+  try {
+    const result = await runWoocommerceUsClientsJob();
+    res.json(result);
+  } catch (err) {
+    console.error('Job woocommerce_us/clients failed:', err);
+    res.status(500).json({ error: String(err), messages: [] });
+  }
+});
+
+app.post('/jobs/woocommerce_us/invoices', async (_req, res) => {
+  try {
+    const result = await runWoocommerceUsInvoicesJob();
+    res.json(result);
+  } catch (err) {
+    console.error('Job woocommerce_us/invoices failed:', err);
     res.status(500).json({ error: String(err), messages: [] });
   }
 });

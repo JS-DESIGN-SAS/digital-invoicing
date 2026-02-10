@@ -15,6 +15,9 @@ src/
 ├── falabellacom/
 │   ├── Clients/    # Clientes desde Falabella
 │   └── Invoices/   # Facturas desde Falabella (pendiente)
+├── Woocommerce_us/
+│   ├── Clients/    # Clientes desde WooCommerce US (DIE)
+│   └── Invoices/   # Facturas desde WooCommerce US (pendiente)
 ├── config/         # BigQuery, Secret Manager
 └── server.ts       # API HTTP para Cloud Run
 ```
@@ -62,6 +65,8 @@ src/
 | `npm run job:rappi:invoices` | Job Rappi/Invoices (placeholder) |
 | `npm run job:falabellacom:clients` | Job Falabella/Clients |
 | `npm run job:falabellacom:invoices` | Job Falabella/Invoices (placeholder) |
+| `npm run job:woocommerce_us:clients` | Job WooCommerce US/Clients |
+| `npm run job:woocommerce_us:invoices` | Job WooCommerce US/Invoices (placeholder) |
 
 ## Docker y Cloud Run
 
@@ -95,6 +100,8 @@ docker run -p 8080:8080 \
 - `POST /jobs/rappi/invoices` — Job facturas Rappi (placeholder).
 - `POST /jobs/falabellacom/clients` — Job clientes Falabella.
 - `POST /jobs/falabellacom/invoices` — Job facturas Falabella (placeholder).
+- `POST /jobs/woocommerce_us/clients` — Job clientes WooCommerce US.
+- `POST /jobs/woocommerce_us/invoices` — Job facturas WooCommerce US (placeholder).
 
 Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL de tu servicio Cloud Run en la ruta del job deseado (y opcionalmente protege con un header/secret).
 
@@ -114,3 +121,5 @@ Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL 
 - [Rappi / Invoices](src/Rappi/Invoices/README.md)
 - [Falabella.com / Clients](src/falabellacom/Clients/README.md)
 - [Falabella.com / Invoices](src/falabellacom/Invoices/README.md)
+- [Woocommerce_us / Clients](src/Woocommerce_us/Clients/README.md)
+- [Woocommerce_us / Invoices](src/Woocommerce_us/Invoices/README.md)
