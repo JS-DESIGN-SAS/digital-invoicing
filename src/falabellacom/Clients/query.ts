@@ -111,7 +111,7 @@ WHERE C.document_number IS NULL
   AND A.SKU IS NOT NULL
   AND TRIM(COALESCE(A.SKU, '')) <> ''
   AND LOWER(A.Status) IN ("shipped", "delivered", "finished")
-// ORDER BY created_at ASC
+-- ORDER BY created_at ASC
 `;
 
 /** Lee valor de la fila probando la clave exacta y en minúsculas (BigQuery a veces devuelve nombres en minúscula). */
