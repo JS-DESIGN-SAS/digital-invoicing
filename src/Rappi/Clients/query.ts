@@ -36,10 +36,10 @@ SELECT DISTINCT
         user_phone,
         user_email,
         user_id_document,
-        "PERSON_ENTITY",
-        "Bogotá, D.C.",
-        "Bogotá, D.C.",
-        "CC",
+        "PERSON_ENTITY" as kindOfPerson,
+        "Bogotá, D.C." as department,
+        "Bogotá, D.C." as city,
+        "CC" as documentType,
           -- Primer nombre(s)
   CASE
     WHEN cnt = 1 THEN parts[OFFSET(0)]
@@ -64,8 +64,8 @@ SELECT DISTINCT
            IF(cnt>5, CONCAT(' +…(', cnt-5, ' apellidos adicionales)'), '')
          )
   END AS last_name,
-  "SIMPLIFIED_REGIME",
-  A.created_at
+  "SIMPLIFIED_REGIME" as regime,
+  A.created_at as created_at
 
 
 from \`JS_Designs.Orders_rappi\` A
