@@ -10,7 +10,9 @@
     "job:shopify:clients": "ts-node src/Shopify/Clients/run.ts",
     "job:shopify:invoices": "ts-node src/Shopify/Invoices/run.ts",
     "job:rappi:clients": "ts-node src/Rappi/Clients/run.ts",
-    "job:rappi:invoices": "ts-node src/Rappi/Invoices/run.ts"
+    "job:rappi:invoices": "ts-node src/Rappi/Invoices/run.ts",
+    "job:falabellacom:clients": "ts-node src/falabellacom/Clients/run.ts",
+    "job:falabellacom:invoices": "ts-node src/falabellacom/Invoices/run.ts"
   },
   "engines": {
     "node": ">=20"

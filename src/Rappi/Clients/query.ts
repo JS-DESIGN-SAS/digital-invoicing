@@ -83,21 +83,29 @@ AND A.user_id_document IS NOT NULL
 ORDER BY A.created_at ASC
 `;
 
+/** Lee valor de la fila probando la clave exacta y en minúsculas (BigQuery a veces devuelve nombres en minúscula). */
+function getVal(row: Record<string, unknown>, key: string): string {
+  const v = row[key];
+  if (v != null && v !== '') return String(v).trim();
+  const vLower = row[key.toLowerCase()];
+  if (vLower != null && vLower !== '') return String(vLower).trim();
+  return '';
+}
+
 function rowToClient(row: Record<string, unknown>): RappiClientRow {
-  const get = (key: string): string => (row[key] != null ? String(row[key]) : '');
   return {
-    user_address: get('user_address'),
-    user_phone: get('user_phone'),
-    user_email: get('user_email'),
-    user_id_document: get('user_id_document'),
-    kindOfPerson: get('kindOfPerson'),
-    department: get('department'),
-    city: get('city'),
-    documentType: get('documentType'),
-    first_name: get('first_name'),
-    last_name: get('last_name'),
-    regime: get('regime'),
-    created_at: get('created_at'),
+    user_address: getVal(row, 'user_address'),
+    user_phone: getVal(row, 'user_phone'),
+    user_email: getVal(row, 'user_email'),
+    user_id_document: getVal(row, 'user_id_document'),
+    kindOfPerson: getVal(row, 'kindOfPerson') || 'PERSON_ENTITY',
+    department: getVal(row, 'department'),
+    city: getVal(row, 'city'),
+    documentType: getVal(row, 'documentType') || 'CC',
+    first_name: getVal(row, 'first_name'),
+    last_name: getVal(row, 'last_name'),
+    regime: getVal(row, 'regime') || 'SIMPLIFIED_REGIME',
+    created_at: getVal(row, 'created_at'),
   };
 }
 

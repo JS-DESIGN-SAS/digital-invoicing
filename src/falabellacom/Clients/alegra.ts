@@ -1,9 +1,9 @@
 /**
- * Crear clientes en Alegra a partir de los datos de BigQuery (Rappi).
+ * Crear clientes en Alegra a partir de los datos de BigQuery (Falabella).
  */
 
 import { getAlegraSecrets } from '../../config/secrets';
-import type { RappiClientRow } from './query';
+import type { FalabellaClientRow } from './query';
 
 const ALEGRA_CONTACTS_URL = 'https://api.alegra.com/api/v1/contacts';
 
@@ -19,7 +19,7 @@ interface AlegraPayload {
   name?: string;
 }
 
-function buildPayload(row: RappiClientRow): AlegraPayload {
+function buildPayload(row: FalabellaClientRow): AlegraPayload {
   const firstName = row.first_name ?? '';
   const lastName = row.last_name ?? '';
   const name = `${firstName} ${lastName}`.trim();
@@ -33,15 +33,15 @@ function buildPayload(row: RappiClientRow): AlegraPayload {
     },
     address: {
       address: row.user_address,
-      department: row.department,
-      city: row.city,
+      department: row.department ?? '',
+      city: row.city ?? '',
     },
     mobile: row.user_phone,
     email: row.user_email,
     type: 'client',
   };
 
-  if (row.kindOfPerson === 'PERSON_ENTITY') {
+  if (payload.kindOfPerson === 'PERSON_ENTITY') {
     payload.nameObject = { firstName, lastName };
   } else {
     payload.name = name;
@@ -49,12 +49,12 @@ function buildPayload(row: RappiClientRow): AlegraPayload {
   return payload;
 }
 
-export async function createClient(row: RappiClientRow): Promise<{ ok: boolean; status: number; body: string }> {
+export async function createClient(row: FalabellaClientRow): Promise<{ ok: boolean; status: number; body: string }> {
   const { token, email } = await getAlegraSecrets();
   const authHeader = 'Basic ' + Buffer.from(`${email}:${token}`).toString('base64');
   const payload = buildPayload(row);
 
-  console.log('[Alegra Client Rappi] Datos a cargar:', JSON.stringify(payload));
+  console.log('[Alegra Client Falabella] Datos a cargar:', JSON.stringify(payload));
 
   const res = await fetch(ALEGRA_CONTACTS_URL, {
     method: 'POST',
@@ -68,6 +68,6 @@ export async function createClient(row: RappiClientRow): Promise<{ ok: boolean; 
   });
 
   const body = await res.text();
-  console.log('[Alegra Client Rappi] Respuesta Alegra:', JSON.stringify({ status: res.status, ok: res.ok, body }));
+  console.log('[Alegra Client Falabella] Respuesta Alegra:', JSON.stringify({ status: res.status, ok: res.ok, body }));
   return { ok: res.ok, status: res.status, body };
 }

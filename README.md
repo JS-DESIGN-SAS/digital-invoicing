@@ -10,8 +10,11 @@ src/
 │   ├── Clients/    # Crear clientes en Alegra desde órdenes BigQuery (JS_Designs)
 │   └── Invoices/   # Facturas desde Shopify (pendiente)
 ├── Rappi/
-│   ├── Clients/    # Clientes desde Rappi (pendiente)
+│   ├── Clients/    # Clientes desde Rappi
 │   └── Invoices/   # Facturas desde Rappi (pendiente)
+├── falabellacom/
+│   ├── Clients/    # Clientes desde Falabella
+│   └── Invoices/   # Facturas desde Falabella (pendiente)
 ├── config/         # BigQuery, Secret Manager
 └── server.ts       # API HTTP para Cloud Run
 ```
@@ -55,8 +58,10 @@ src/
 | `npm run dev` | Servidor en modo desarrollo con recarga |
 | `npm run job:shopify:clients` | Ejecuta el job Shopify/Clients por CLI |
 | `npm run job:shopify:invoices` | Job Shopify/Invoices (placeholder) |
-| `npm run job:rappi:clients` | Job Rappi/Clients (placeholder) |
+| `npm run job:rappi:clients` | Job Rappi/Clients |
 | `npm run job:rappi:invoices` | Job Rappi/Invoices (placeholder) |
+| `npm run job:falabellacom:clients` | Job Falabella/Clients |
+| `npm run job:falabellacom:invoices` | Job Falabella/Invoices (placeholder) |
 
 ## Docker y Cloud Run
 
@@ -86,8 +91,10 @@ docker run -p 8080:8080 \
 - `GET /health` — Health check.
 - `POST /jobs/shopify/clients` — Ejecuta el job de creación de clientes Shopify → Alegra.
 - `POST /jobs/shopify/invoices` — Job facturas Shopify (placeholder).
-- `POST /jobs/rappi/clients` — Job clientes Rappi (placeholder).
+- `POST /jobs/rappi/clients` — Job clientes Rappi.
 - `POST /jobs/rappi/invoices` — Job facturas Rappi (placeholder).
+- `POST /jobs/falabellacom/clients` — Job clientes Falabella.
+- `POST /jobs/falabellacom/invoices` — Job facturas Falabella (placeholder).
 
 Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL de tu servicio Cloud Run en la ruta del job deseado (y opcionalmente protege con un header/secret).
 
@@ -105,3 +112,5 @@ Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL 
 - [Shopify / Invoices](src/Shopify/Invoices/README.md)
 - [Rappi / Clients](src/Rappi/Clients/README.md)
 - [Rappi / Invoices](src/Rappi/Invoices/README.md)
+- [Falabella.com / Clients](src/falabellacom/Clients/README.md)
+- [Falabella.com / Invoices](src/falabellacom/Invoices/README.md)
