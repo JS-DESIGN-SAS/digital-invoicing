@@ -27,49 +27,59 @@ WITH parsed AS (
     user_name,
     SPLIT(user_name, ' ')                        AS parts,
     ARRAY_LENGTH(SPLIT(user_name, ' '))           AS cnt
-  FROM \`JS_Designs.Orders_rappi\`
+  FROM
+    \`JS_Designs.Orders_rappi\`
 )
+
 SELECT DISTINCT
-  A.user_address    AS user_address,
-  A.user_phone      AS user_phone,
-  A.user_email      AS user_email,
-  A.user_id_document AS user_id_document,
-  "PERSON_ENTITY"   AS kindOfPerson,
-  "Bogotá, D.C."    AS department,
-  "Bogotá, D.C."    AS city,
-  "CC"              AS documentType,
+    user_address,
+        user_phone,
+        user_email,
+        user_id_document,
+        "PERSON_ENTITY",
+        "Bogotá, D.C.",
+        "Bogotá, D.C.",
+        "CC",
+          -- Primer nombre(s)
   CASE
-    WHEN B.cnt = 1 THEN B.parts[OFFSET(0)]
-    WHEN B.cnt = 2 THEN B.parts[OFFSET(0)]
-    WHEN B.cnt = 3 THEN B.parts[OFFSET(0)]
-    WHEN B.cnt = 4 THEN CONCAT(B.parts[OFFSET(0)], ' ', B.parts[OFFSET(1)])
-    WHEN B.cnt = 5 THEN CONCAT(B.parts[OFFSET(0)], ' ', B.parts[OFFSET(1)])
-    ELSE CONCAT(B.parts[OFFSET(0)], IF(B.cnt>5, CONCAT(' +…(', B.cnt-2, ' apellidos adicionales)'), ''))
+    WHEN cnt = 1 THEN parts[OFFSET(0)]
+    WHEN cnt = 2 THEN parts[OFFSET(0)]
+    WHEN cnt = 3 THEN parts[OFFSET(0)]
+    WHEN cnt = 4 THEN CONCAT(parts[OFFSET(0)], ' ', parts[OFFSET(1)])
+    WHEN cnt = 5 THEN CONCAT(parts[OFFSET(0)], ' ', parts[OFFSET(1)])
+    ELSE CONCAT(parts[OFFSET(0)], IF(cnt>5, CONCAT(' +…(', cnt-2, ' apellidos adicionales)'), ''))
   END AS first_name,
+
+  -- Apellidos
   CASE
-    WHEN B.cnt = 1 THEN NULL
-    WHEN B.cnt = 2 THEN B.parts[OFFSET(1)]
-    WHEN B.cnt = 3 THEN CONCAT(B.parts[OFFSET(1)], ' ', B.parts[OFFSET(2)])
-    WHEN B.cnt = 4 THEN CONCAT(B.parts[OFFSET(2)], ' ', B.parts[OFFSET(3)])
-    WHEN B.cnt = 5 THEN CONCAT(B.parts[OFFSET(2)], ' ', B.parts[OFFSET(3)], ' ', B.parts[OFFSET(4)])
+    WHEN cnt = 1 THEN NULL
+    WHEN cnt = 2 THEN parts[OFFSET(1)]
+    WHEN cnt = 3 THEN CONCAT(parts[OFFSET(1)], ' ', parts[OFFSET(2)])
+    WHEN cnt = 4 THEN CONCAT(parts[OFFSET(2)], ' ', parts[OFFSET(3)])
+    WHEN cnt = 5 THEN CONCAT(parts[OFFSET(2)], ' ', parts[OFFSET(3)], ' ', parts[OFFSET(4)])
     ELSE CONCAT(
-      B.parts[OFFSET(2)], ' ',
-      B.parts[OFFSET(3)], ' ',
-      B.parts[OFFSET(4)],
-      IF(B.cnt>5, CONCAT(' +…(', B.cnt-5, ' apellidos adicionales)'), '')
-    )
+           parts[OFFSET(2)], ' ',
+           parts[OFFSET(3)], ' ',
+           parts[OFFSET(4)],
+           IF(cnt>5, CONCAT(' +…(', cnt-5, ' apellidos adicionales)'), '')
+         )
   END AS last_name,
-  "SIMPLIFIED_REGIME" AS regime,
-  CAST(A.created_at AS STRING) AS created_at
-FROM \`JS_Designs.Orders_rappi\` A
-LEFT JOIN parsed B ON A.Order_id = B.Order_id
-LEFT JOIN \`JS_Designs.Clients\` C ON A.user_id_document = C.document_number
-WHERE C.document_number IS NULL
-  AND A.user_name NOT LIKE '%*%'
-  AND A.user_id_document IS NOT NULL
-  AND A.order_status = 'finished'
-  AND A.sku IS NOT NULL
-  AND TRIM(COALESCE(A.sku, '')) <> ''
+  "SIMPLIFIED_REGIME",
+  A.created_at
+
+
+from \`JS_Designs.Orders_rappi\` A
+left join parsed  B
+ON A.ORDER_ID = B.ORDER_ID
+Left join \`JS_Designs.Clients\` C
+ON A.user_id_document = C.document_number
+
+WHERE C.document_number IS NULL and a.user_name not like "%*%"
+AND user_id_document IS NOT NULL
+AND order_status = 'finished'
+AND A.sku <> ""
+AND A.sku IS NOT NULL
+AND A.user_id_document IS NOT NULL
 ORDER BY A.created_at ASC
 `;
 
