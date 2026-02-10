@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.env
+.env.*
+*.md
+!.dockerignore
+Dockerfile
+cloudbuild.yaml
+.gcloudignore
+.cursor
+*.log

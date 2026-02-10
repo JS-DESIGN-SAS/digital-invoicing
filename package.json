@@ -1,0 +1,30 @@
+{
+  "name": "digital-invoicing",
+  "version": "1.0.0",
+  "description": "Facturación digital - jobs Shopify y Rappi para Cloud Run",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "job:shopify:clients": "ts-node src/Shopify/Clients/run.ts",
+    "job:shopify:invoices": "ts-node src/Shopify/Invoices/run.ts",
+    "job:rappi:clients": "ts-node src/Rappi/Clients/run.ts",
+    "job:rappi:invoices": "ts-node src/Rappi/Invoices/run.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.3.0",
+    "@google-cloud/secret-manager": "^6.0.0",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,33 @@
+# Cloud Build para Digital Invoicing - deploy a Cloud Run
+# Conectar repo en Cloud Build y crear trigger que ejecute este archivo en push a main
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/digital-invoicing:$COMMIT_SHA', '-t', 'gcr.io/$PROJECT_ID/digital-invoicing:latest', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/digital-invoicing:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/digital-invoicing:latest']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'digital-invoicing'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/digital-invoicing:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/digital-invoicing:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/digital-invoicing:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
