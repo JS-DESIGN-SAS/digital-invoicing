@@ -1,7 +1,11 @@
 /**
  * Shopify / Invoices
- * Job para generar facturas desde órdenes Shopify (pendiente de implementar).
+ * Ejecuta el query de líneas a facturar y envía el resultado por correo en tabla HTML.
+ * Por ahora no crea facturas en Alegra; solo reporte por email.
  */
+
+import { queryInvoiceLines } from './query';
+import { buildHtmlTable, sendReportEmail } from './email';
 
 export interface JobResult {
   total: number;
@@ -11,10 +15,42 @@ export interface JobResult {
 }
 
 export async function runShopifyInvoicesJob(): Promise<JobResult> {
-  return {
-    total: 0,
-    success: 0,
-    errors: 0,
-    messages: ['Job Shopify/Invoices no implementado aún.'],
-  };
+  const messages: string[] = [];
+
+  try {
+    messages.push('Ejecutando query de facturas Shopify...');
+    const rows = await queryInvoiceLines();
+    messages.push(`Query devolvió ${rows.length} filas.`);
+
+    if (rows.length === 0) {
+      messages.push('No hay líneas para reportar. No se envía correo.');
+      return {
+        total: 0,
+        success: 0,
+        errors: 0,
+        messages,
+      };
+    }
+
+    const html = buildHtmlTable(rows);
+    const subject = `Shopify Invoices – ${rows.length} líneas (${new Date().toISOString().slice(0, 10)})`;
+    await sendReportEmail(html, subject);
+    messages.push(`Correo enviado a Anthony@julianasanchez.co con tabla de ${rows.length} filas.`);
+
+    return {
+      total: rows.length,
+      success: rows.length,
+      errors: 0,
+      messages,
+    };
+  } catch (err) {
+    const msg = String(err);
+    messages.push('Error: ' + msg);
+    return {
+      total: 0,
+      success: 0,
+      errors: 1,
+      messages,
+    };
+  }
 }

@@ -50,3 +50,34 @@ export async function getAlegraSecrets(): Promise<AlegraSecrets> {
     );
   }
 }
+
+export interface EmailSecrets {
+  user: string;
+  appPassword: string;
+}
+
+/**
+ * Credenciales para envío de correo (reportes, facturas, notificaciones).
+ * Variables de entorno: GMAIL_SMTP_USER, GMAIL_SMTP_APP_PASSWORD.
+ * Secret Manager: gmail-smtp-user, gmail-smtp-app-password.
+ */
+export async function getEmailSecrets(): Promise<EmailSecrets> {
+  if (process.env.GMAIL_SMTP_USER && process.env.GMAIL_SMTP_APP_PASSWORD) {
+    return {
+      user: process.env.GMAIL_SMTP_USER.trim(),
+      appPassword: process.env.GMAIL_SMTP_APP_PASSWORD.trim(),
+    };
+  }
+  try {
+    const [user, appPassword] = await Promise.all([
+      getSecret('gmail-smtp-user'),
+      getSecret('gmail-smtp-app-password'),
+    ]);
+    return { user: user.trim(), appPassword: appPassword.trim() };
+  } catch (e) {
+    throw new Error(
+      'Configure GMAIL_SMTP_USER y GMAIL_SMTP_APP_PASSWORD (env) o secretos gmail-smtp-user y gmail-smtp-app-password en Secret Manager. ' +
+        String(e)
+    );
+  }
+}
