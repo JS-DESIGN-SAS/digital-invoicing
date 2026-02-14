@@ -1,6 +1,6 @@
 # Falabella.com / Invoices
 
-Job para generar **facturas** a partir de órdenes Falabella. Actualmente es un **placeholder**.
+Job para generar **facturas** a partir de órdenes Falabella. **Pendiente de implementar** (placeholder).
 
 ## Uso
 

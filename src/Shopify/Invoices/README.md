@@ -1,12 +1,15 @@
 # Shopify / Invoices
 
-Job que ejecuta el **query de líneas a facturar** (órdenes Shopify sin factura en `JS_Designs.Invoices`) y, por ahora, **envía el resultado por correo** a **Anthony@julianasanchez.co** en formato **tabla HTML**. No crea facturas en Alegra todavía.
+Job que ejecuta el **query de líneas a facturar** (órdenes Shopify sin factura en `JS_Designs.Invoices`) y **envía el resultado por correo** a **Anthony@julianasanchez.co** en formato **tabla HTML**. Por ahora no crea facturas en Alegra.
+
+- **Tiempo máximo de ejecución:** 8 minutos (timeout).
+- **Remitente del correo:** "Sistema de notificaciones JS".
 
 ## Flujo
 
 1. Ejecuta en BigQuery el query migrado de `createInvoices` (Orders + Order_details + Clients + Products, con `UNION ALL` para envíos).
 2. Construye una tabla HTML con las columnas: Order ID, Quantity, Client code, Product code, Item price, Discount, Annotation, Tax.
-3. Envía el correo usando **Gmail SMTP** con las credenciales configuradas (env o Secret Manager).
+3. Envía el correo usando **Gmail SMTP** (remitente "Sistema de notificaciones JS") con las credenciales configuradas (env o Secret Manager).
 
 ## Permisos de la service account (Cloud Scheduler / Cloud Run)
 
@@ -49,3 +52,10 @@ El resultado del job incluye `total`, `success`, `errors` y `messages` (por ejem
 ## Query
 
 El query replica la lógica del script original: `temp_table` con facturas recientes, órdenes con estado processing/addi-approved/PAID, sin factura, join con Clients por documento normalizado, y con Products por SKU. Incluye el `UNION ALL` para añadir la línea de envío (product_code 3579) cuando aplica.
+
+## Archivos
+
+- `query.ts`: query BigQuery y mapeo a `InvoiceRow`.
+- `email.ts`: construcción de tabla HTML y envío por Gmail SMTP.
+- `index.ts`: `runShopifyInvoicesJob()` (con timeout de 8 min).
+- `run.ts`: entrada CLI.

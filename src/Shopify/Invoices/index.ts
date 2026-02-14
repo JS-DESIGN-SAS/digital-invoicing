@@ -2,6 +2,7 @@
  * Shopify / Invoices
  * Ejecuta el query de líneas a facturar y envía el resultado por correo en tabla HTML.
  * Por ahora no crea facturas en Alegra; solo reporte por email.
+ * Tiempo máximo de ejecución: 8 minutos.
  */
 
 import { queryInvoiceLines } from './query';
@@ -14,7 +15,9 @@ export interface JobResult {
   messages: string[];
 }
 
-export async function runShopifyInvoicesJob(): Promise<JobResult> {
+const MAX_DURATION_MS = 8 * 60 * 1000; // 8 minutos
+
+async function runJob(): Promise<JobResult> {
   const messages: string[] = [];
 
   console.log('[Shopify Invoices] Inicio del job.');
@@ -57,4 +60,14 @@ export async function runShopifyInvoicesJob(): Promise<JobResult> {
       messages,
     };
   }
+}
+
+export async function runShopifyInvoicesJob(): Promise<JobResult> {
+  const timeoutPromise = new Promise<JobResult>((_, reject) => {
+    setTimeout(() => {
+      console.error('[Shopify Invoices] Timeout: tiempo máximo de ejecución (8 minutos) alcanzado.');
+      reject(new Error('Job cancelado: tiempo máximo de ejecución (8 minutos) alcanzado.'));
+    }, MAX_DURATION_MS);
+  });
+  return Promise.race([runJob(), timeoutPromise]);
 }

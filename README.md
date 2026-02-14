@@ -8,7 +8,7 @@ Proyecto de facturación digital que corre en **Google Cloud Run**, construido c
 src/
 ├── Shopify/
 │   ├── Clients/    # Crear clientes en Alegra desde órdenes BigQuery (JS_Designs)
-│   └── Invoices/   # Facturas desde Shopify (pendiente)
+│   └── Invoices/   # Query líneas a facturar + envío reporte por email
 ├── Rappi/
 │   ├── Clients/    # Clientes desde Rappi
 │   └── Invoices/   # Facturas desde Rappi (pendiente)
@@ -63,7 +63,7 @@ src/
 | `npm start` | Ejecuta el servidor (tras `npm run build`) |
 | `npm run dev` | Servidor en modo desarrollo con recarga |
 | `npm run job:shopify:clients` | Ejecuta el job Shopify/Clients por CLI |
-| `npm run job:shopify:invoices` | Job Shopify/Invoices (placeholder) |
+| `npm run job:shopify:invoices` | Job Shopify/Invoices (query + reporte por email) |
 | `npm run job:rappi:clients` | Job Rappi/Clients |
 | `npm run job:rappi:invoices` | Job Rappi/Invoices (placeholder) |
 | `npm run job:falabellacom:clients` | Job Falabella/Clients |
@@ -100,7 +100,7 @@ docker run -p 8080:8080 \
 
 - `GET /health` — Health check.
 - `POST /jobs/shopify/clients` — Ejecuta el job de creación de clientes Shopify → Alegra.
-- `POST /jobs/shopify/invoices` — Job facturas Shopify (placeholder).
+- `POST /jobs/shopify/invoices` — Job Shopify/Invoices (query + reporte por email).
 - `POST /jobs/rappi/clients` — Job clientes Rappi.
 - `POST /jobs/rappi/invoices` — Job facturas Rappi (placeholder).
 - `POST /jobs/falabellacom/clients` — Job clientes Falabella.
@@ -115,10 +115,14 @@ Para automatizar con **Cloud Scheduler**, crea un job que haga un POST a la URL 
 ## Secretos en Google Cloud
 
 - **BigQuery**: el servicio usa **Application Default Credentials**. En Cloud Run es la service account del servicio; en local, `gcloud auth application-default login` o variable `GOOGLE_APPLICATION_CREDENTIALS`.
-- **Alegra**: guardar en **Secret Manager**:
+- **Alegra** (jobs de clientes): en **Secret Manager**:
   - `alegra-token`
-  - `alegra-email`  
-  Y dar acceso a la service account de Cloud Run a esos secretos. Luego en Cloud Run puedes mapear las variables de entorno desde esos secretos.
+  - `alegra-email`
+- **Correo** (jobs que envían email, p. ej. Shopify Invoices): en **Secret Manager**:
+  - `gmail-smtp-user` — cuenta Gmail que envía
+  - `gmail-smtp-app-password` — contraseña de aplicación de Gmail  
+
+Dar a la service account de Cloud Run el rol **Secret Manager Secret Accessor** sobre los secretos que use cada job.
 
 ## README por job
 

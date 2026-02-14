@@ -24,4 +24,15 @@ curl -X POST https://<tu-url-cloud-run>/jobs/meli/clients
 
 ## Configuración
 
-Mismos secretos que el resto: `ALEGRA_EMAIL` y `ALEGRA_TOKEN`. Service account con acceso a BigQuery.
+| Origen | Variable / Secreto | Descripción |
+|--------|--------------------|-------------|
+| Env o Secret Manager | `ALEGRA_EMAIL` / `alegra-email` | Email Alegra |
+| Env o Secret Manager | `ALEGRA_TOKEN` / `alegra-token` | Token API Alegra |
+| GCP | Service account / ADC | Acceso a BigQuery y Secret Manager |
+
+## Archivos
+
+- `query.ts`: query BigQuery y mapeo a `MeliClientRow`.
+- `alegra.ts`: construcción del payload y `createClient()` (POST a Alegra).
+- `index.ts`: `runMeliClientsJob()`.
+- `run.ts`: entrada CLI.

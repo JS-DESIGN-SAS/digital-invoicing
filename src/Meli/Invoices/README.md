@@ -1,6 +1,6 @@
 # Meli / Invoices
 
-Job para generar **facturas** desde Meli (Mercado Libre). Actualmente es un **placeholder**.
+Job para generar **facturas** desde Meli (Mercado Libre). **Pendiente de implementar** (placeholder).
 
 ## Uso
 

@@ -26,4 +26,15 @@ curl -X POST https://<tu-url-cloud-run>/jobs/woocommerce_us/clients
 
 ## Configuración
 
-Mismos secretos que el resto: `ALEGRA_EMAIL` / `ALEGRA_TOKEN` (o Secret Manager). Service account con acceso a BigQuery.
+| Origen | Variable / Secreto | Descripción |
+|--------|--------------------|-------------|
+| Env o Secret Manager | `ALEGRA_EMAIL` / `alegra-email` | Email Alegra |
+| Env o Secret Manager | `ALEGRA_TOKEN` / `alegra-token` | Token API Alegra |
+| GCP | Service account / ADC | Acceso a BigQuery y Secret Manager |
+
+## Archivos
+
+- `query.ts`: query BigQuery y mapeo a `WoocommerceUsClientRow`.
+- `alegra.ts`: construcción del payload y `createClient()` (POST a Alegra, tipo DIE).
+- `index.ts`: `runWoocommerceUsClientsJob()`.
+- `run.ts`: entrada CLI.

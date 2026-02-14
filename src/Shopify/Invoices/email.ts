@@ -89,8 +89,9 @@ export async function sendReportEmail(html: string, subject: string): Promise<vo
       pass: appPassword,
     },
   });
+  const fromDisplay = '"Sistema de notificaciones JS" <' + user + '>';
   await transporter.sendMail({
-    from: user,
+    from: fromDisplay,
     to: TO_EMAIL,
     subject,
     html,

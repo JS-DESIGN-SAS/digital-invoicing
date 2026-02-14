@@ -1,6 +1,6 @@
 # Woocommerce_us / Invoices
 
-Job para generar **facturas** desde WooCommerce US. Actualmente es un **placeholder**.
+Job para generar **facturas** desde WooCommerce US. **Pendiente de implementar** (placeholder).
 
 ## Uso
 
