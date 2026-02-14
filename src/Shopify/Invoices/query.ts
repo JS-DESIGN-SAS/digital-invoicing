@@ -122,6 +122,9 @@ function rowToInvoice(row: Record<string, unknown>): InvoiceRow {
 }
 
 export async function queryInvoiceLines(): Promise<InvoiceRow[]> {
+  console.log('[Shopify Invoices] Step 1: Ejecutando query en BigQuery...');
   const [rows] = await bigquery.query({ query: QUERY });
-  return (rows as Record<string, unknown>[]).map(rowToInvoice);
+  const result = (rows as Record<string, unknown>[]).map(rowToInvoice);
+  console.log('[Shopify Invoices] Step 1: Query finalizado. Filas obtenidas:', result.length);
+  return result;
 }

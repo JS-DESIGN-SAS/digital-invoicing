@@ -18,6 +18,7 @@ function escapeHtml(s: string): string {
 }
 
 export function buildHtmlTable(rows: InvoiceRow[]): string {
+  console.log('[Shopify Invoices] Step 2: Construyendo tabla HTML con', rows.length, 'filas...');
   const headers = [
     'Order ID',
     'Quantity',
@@ -49,7 +50,7 @@ export function buildHtmlTable(rows: InvoiceRow[]): string {
     )
     .join('');
 
-  return `
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,10 +72,14 @@ export function buildHtmlTable(rows: InvoiceRow[]): string {
   <p><small>Generado por digital-invoicing (Shopify/Invoices job)</small></p>
 </body>
 </html>`.trim();
+  console.log('[Shopify Invoices] Step 2: Tabla HTML generada.');
+  return html;
 }
 
 export async function sendReportEmail(html: string, subject: string): Promise<void> {
+  console.log('[Shopify Invoices] Step 3: Obteniendo credenciales de correo...');
   const { user, appPassword } = await getEmailSecrets();
+  console.log('[Shopify Invoices] Step 3: Credenciales obtenidas. Enviando correo a', TO_EMAIL, '...');
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -90,4 +95,5 @@ export async function sendReportEmail(html: string, subject: string): Promise<vo
     subject,
     html,
   });
+  console.log('[Shopify Invoices] Step 3: Correo enviado correctamente a', TO_EMAIL);
 }
