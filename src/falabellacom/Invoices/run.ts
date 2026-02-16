@@ -1,5 +1,5 @@
 /**
- * CLI para job Falabella/Invoices (pendiente).
+ * CLI: Job Falabella/Invoices
  */
 
 import { runFalabellaInvoicesJob } from './index';

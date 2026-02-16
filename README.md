@@ -14,7 +14,7 @@ src/
 │   └── Invoices/   # Facturas desde Rappi (pendiente)
 ├── falabellacom/
 │   ├── Clients/    # Clientes desde Falabella
-│   └── Invoices/   # Facturas desde Falabella (pendiente)
+│   └── Invoices/   # Facturas Falabella (query + Alegra + email)
 ├── Woocommerce_us/
 │   ├── Clients/    # Clientes desde WooCommerce US (DIE)
 │   └── Invoices/   # Facturas desde WooCommerce US (pendiente)
@@ -67,7 +67,7 @@ src/
 | `npm run job:rappi:clients` | Job Rappi/Clients |
 | `npm run job:rappi:invoices` | Job Rappi/Invoices (placeholder) |
 | `npm run job:falabellacom:clients` | Job Falabella/Clients |
-| `npm run job:falabellacom:invoices` | Job Falabella/Invoices (placeholder) |
+| `npm run job:falabellacom:invoices` | Job Falabella/Invoices (query + Alegra + email) |
 | `npm run job:woocommerce_us:clients` | Job WooCommerce US/Clients |
 | `npm run job:woocommerce_us:invoices` | Job WooCommerce US/Invoices (placeholder) |
 | `npm run job:meli:clients` | Job Meli (Mercado Libre) / Clients |
@@ -104,7 +104,7 @@ docker run -p 8080:8080 \
 - `POST /jobs/rappi/clients` — Job clientes Rappi.
 - `POST /jobs/rappi/invoices` — Job facturas Rappi (placeholder).
 - `POST /jobs/falabellacom/clients` — Job clientes Falabella.
-- `POST /jobs/falabellacom/invoices` — Job facturas Falabella (placeholder).
+- `POST /jobs/falabellacom/invoices` — Job Falabella/Invoices (query + Alegra + email).
 - `POST /jobs/woocommerce_us/clients` — Job clientes WooCommerce US.
 - `POST /jobs/woocommerce_us/invoices` — Job facturas WooCommerce US (placeholder).
 - `POST /jobs/meli/clients` — Job clientes Meli (Mercado Libre).
