@@ -1,6 +1,6 @@
 # Shopify / Invoices
 
-Job que ejecuta el **query de líneas a facturar** (órdenes Shopify sin factura en `JS_Designs.Invoices`) y **envía el resultado por correo** a **Anthony@julianasanchez.co** en formato **tabla HTML**. Por ahora no crea facturas en Alegra.
+Job que ejecuta el **query de líneas a facturar** (órdenes Shopify sin factura en `JS_Designs.Invoices`), **crea las facturas en Alegra** (una por orden) y **envía el resultado por correo** a **Anthony@julianasanchez.co** en formato **tabla HTML**.
 
 - **Tiempo máximo de ejecución:** 8 minutos (timeout).
 - **Remitente del correo:** "Sistema de notificaciones JS".
@@ -8,8 +8,9 @@ Job que ejecuta el **query de líneas a facturar** (órdenes Shopify sin factura
 ## Flujo
 
 1. Ejecuta en BigQuery el query migrado de `createInvoices` (Orders + Order_details + Clients + Products, con `UNION ALL` para envíos).
-2. Construye una tabla HTML con las columnas: Order ID, Quantity, Client code, Product code, Item price, Discount, Annotation, Tax.
-3. Envía el correo usando **Gmail SMTP** (remitente "Sistema de notificaciones JS") con las credenciales configuradas (env o Secret Manager).
+2. Agrupa las filas por orden y **crea una factura en Alegra por cada orden** (POST a `api.alegra.com/api/v1/invoices`). Se registra un log por factura con el payload enviado y la respuesta. Pausa de 3 s entre facturas.
+3. Construye una tabla HTML con las columnas: Order ID, Quantity, Client code, Product code, Item price, Discount, Annotation, Tax.
+4. Envía el correo usando **Gmail SMTP** (remitente "Sistema de notificaciones JS") con las credenciales configuradas (env o Secret Manager).
 
 ## Permisos de la service account (Cloud Scheduler / Cloud Run)
 
@@ -56,6 +57,7 @@ El query replica la lógica del script original: `temp_table` con facturas recie
 ## Archivos
 
 - `query.ts`: query BigQuery y mapeo a `InvoiceRow`.
+- `alegra.ts`: agrupación por orden, armado del payload y POST a Alegra (log por factura y respuesta).
 - `email.ts`: construcción de tabla HTML y envío por Gmail SMTP.
-- `index.ts`: `runShopifyInvoicesJob()` (con timeout de 8 min).
+- `index.ts`: `runShopifyInvoicesJob()` (query → Alegra → email; timeout 8 min).
 - `run.ts`: entrada CLI.

@@ -1,12 +1,12 @@
 /**
  * Shopify / Invoices
- * Ejecuta el query de líneas a facturar y envía el resultado por correo en tabla HTML.
- * Por ahora no crea facturas en Alegra; solo reporte por email.
+ * Ejecuta el query de líneas a facturar, crea las facturas en Alegra y envía el resultado por correo.
  * Tiempo máximo de ejecución: 8 minutos.
  */
 
 import { queryInvoiceLines } from './query';
 import { buildHtmlTable, sendReportEmail } from './email';
+import { createInvoicesInAlegra } from './alegra';
 
 export interface JobResult {
   total: number;
@@ -16,7 +16,6 @@ export interface JobResult {
 }
 
 const MAX_DURATION_MS = 8 * 60 * 1000; // 8 minutos
-
 async function runJob(): Promise<JobResult> {
   const messages: string[] = [];
 
@@ -37,16 +36,29 @@ async function runJob(): Promise<JobResult> {
       };
     }
 
+    console.log('[Shopify Invoices] Creando facturas en Alegra...');
+    const results = await createInvoicesInAlegra(rows);
+    const created = results.filter((r) => r.ok).length;
+    const failed = results.filter((r) => !r.ok).length;
+    for (const r of results) {
+      messages.push(
+        r.ok
+          ? `Orden ${r.orderId}: factura creada (status ${r.status})`
+          : `Orden ${r.orderId}: error ${r.status} - ${r.body}`
+      );
+    }
+    messages.push(`Alegra: ${created} facturas creadas, ${failed} errores.`);
+
     const html = buildHtmlTable(rows);
-    const subject = `Shopify Invoices – ${rows.length} líneas (${new Date().toISOString().slice(0, 10)})`;
+    const subject = `Shopify Invoices – ${rows.length} líneas, ${created} facturas creadas (${new Date().toISOString().slice(0, 10)})`;
     await sendReportEmail(html, subject);
     messages.push(`Correo enviado a Anthony@julianasanchez.co con tabla de ${rows.length} filas.`);
 
-    console.log('[Shopify Invoices] Job finalizado correctamente. Total filas:', rows.length);
+    console.log('[Shopify Invoices] Job finalizado. Filas:', rows.length, '| Facturas creadas:', created, '| Errores:', failed);
     return {
       total: rows.length,
-      success: rows.length,
-      errors: 0,
+      success: created,
+      errors: failed,
       messages,
     };
   } catch (err) {
