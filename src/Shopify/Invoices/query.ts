@@ -29,10 +29,11 @@ SELECT DISTINCT
   CASE WHEN B.sku LIKE '111111%' THEN '4409' ELSE E.product_code END AS product_code,
   CASE WHEN B.sku LIKE '111111%' THEN B.subtotal ELSE ROUND(E.price, 2) END AS item_price,
   CASE
-    WHEN B.sku LIKE '111111%' THEN 0
-    WHEN ROUND((1 - (B.Total_amount / ((E.price * B.quantity) * 1.19))) * 100) = 100 THEN 99
-    ELSE ROUND((1 - (B.Total_amount / ((E.price * B.quantity) * 1.19))) * 100)
-  END AS discount,
+      WHEN B.sku LIKE '111111%' THEN 0.0
+      WHEN ROUND((1 - (B.Total_amount / ((E.price * B.quantity) * 1.19))) * 100, 1) = 100 THEN 99.9
+      ELSE ROUND((1 - (B.Total_amount / ((E.price * B.quantity) * 1.19))) * 100, 1)
+    END AS discount,
+
   CONCAT('Pedido Web Order ID: ', A.id) AS anotation,
   3 AS tax
 FROM \`JS_Designs.Orders\` A
