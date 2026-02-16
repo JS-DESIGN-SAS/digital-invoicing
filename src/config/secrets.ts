@@ -81,3 +81,34 @@ export async function getEmailSecrets(): Promise<EmailSecrets> {
     );
   }
 }
+
+export interface GrabilitySecrets {
+  clientId: string;
+  clientSecret: string;
+}
+
+/**
+ * Credenciales para API Grability (Rappi). Login y GET order para validar total_with_discount.
+ * Variables de entorno: RAPPI_GRABILITY_CLIENT_ID, RAPPI_GRABILITY_CLIENT_SECRET.
+ * Secret Manager: rappi-grability-client-id, rappi-grability-client-secret.
+ */
+export async function getGrabilitySecrets(): Promise<GrabilitySecrets> {
+  if (process.env.RAPPI_GRABILITY_CLIENT_ID && process.env.RAPPI_GRABILITY_CLIENT_SECRET) {
+    return {
+      clientId: process.env.RAPPI_GRABILITY_CLIENT_ID.trim(),
+      clientSecret: process.env.RAPPI_GRABILITY_CLIENT_SECRET.trim(),
+    };
+  }
+  try {
+    const [clientId, clientSecret] = await Promise.all([
+      getSecret('rappi-grability-client-id'),
+      getSecret('rappi-grability-client-secret'),
+    ]);
+    return { clientId: clientId.trim(), clientSecret: clientSecret.trim() };
+  } catch (e) {
+    throw new Error(
+      'Configure RAPPI_GRABILITY_CLIENT_ID y RAPPI_GRABILITY_CLIENT_SECRET (env) o secretos rappi-grability-client-id y rappi-grability-client-secret en Secret Manager. ' +
+        String(e)
+    );
+  }
+}
